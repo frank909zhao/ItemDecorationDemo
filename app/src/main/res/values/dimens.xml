@@ -1,0 +1,8 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="timeline_item_offset_left">68dp</dimen>
+    <dimen name="timeline_item_node_radius">16dp</dimen>
+    <dimen name="flag_left">60dp</dimen>
+</resources>
