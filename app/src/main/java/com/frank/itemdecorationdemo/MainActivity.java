@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_divider4:
                 Intent intent4 = new Intent(MainActivity.this,HeaderActivity.class);
                 startActivity(intent4);
+                break;
             case R.id.btn_divider5:
                 Intent intent5 = new Intent(MainActivity.this,StickyHeaderActivity.class);
                 startActivity(intent5);

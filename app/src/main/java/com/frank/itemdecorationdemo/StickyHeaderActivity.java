@@ -15,8 +15,8 @@ public class StickyHeaderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_header);
-        mRecyclerView = (RecyclerView) findViewById(R.id.header_recyclerview);
+        setContentView(R.layout.activity_stickyheader);
+        mRecyclerView = (RecyclerView) findViewById(R.id.stickyheader_recyclerview);
 
         initDatas();
 
