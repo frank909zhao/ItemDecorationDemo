@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by ly-zhaominglai on 2017/4/11.
+ * Created by frank on 2017/4/11.
  */
 
 public class BookRankAdapter extends RecyclerView.Adapter<BookRankAdapter.TestHolder> {

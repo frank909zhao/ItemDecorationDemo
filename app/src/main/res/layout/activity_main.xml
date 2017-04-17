@@ -35,5 +35,17 @@
         android:layout_height="wrap_content"
         android:text="排行榜示例"
         android:textSize="24sp"/>
+    <Button
+        android:id="@+id/btn_divider4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="普通头部示例"
+        android:textSize="24sp"/>
+    <Button
+        android:id="@+id/btn_divider5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="悬停头部示例"
+        android:textSize="24sp"/>
 
 </LinearLayout>

@@ -5,4 +5,7 @@
     <dimen name="timeline_item_offset_left">68dp</dimen>
     <dimen name="timeline_item_node_radius">16dp</dimen>
     <dimen name="flag_left">60dp</dimen>
+    <dimen name="header_divider_height">2dp</dimen>
+    <dimen name="header_height">24dp</dimen>
+    <dimen name="header_textsize">22sp</dimen>
 </resources>

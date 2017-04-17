@@ -1,72 +1,73 @@
 package com.frank.itemdecorationdemo;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
-import android.util.Log;
 import android.view.View;
 
 /**
- * Created by ly-zhaominglai on 2017/4/11.
+ * Created by frank on 2017/4/11.
  */
-
 public class SectionDecoration extends RecyclerView.ItemDecoration {
 
-    private Paint mPaint;
-    Bitmap bitmap;
+
+    private GroupInfoCallback mCallback;
+    private int mHeaderHeight;
+    private int mDividerHeight;
+
+
+    //用来绘制Header上的文字
     private TextPaint mTextPaint;
-    private Paint.FontMetrics mFontMetric;
-    private int mGap;
+    private Paint mPaint;
+    private float mTextSize;
+    private Paint.FontMetrics mFontMetrics;
 
+    private float mTextOffsetX;
 
-    public SectionDecoration() {
-        mPaint = new Paint();
-        mPaint.setColor(Color.CYAN);
-        mPaint.setAntiAlias(true);
+    public SectionDecoration( Context context,GroupInfoCallback callback) {
+        this.mCallback = callback;
+        mDividerHeight = context.getResources().getDimensionPixelOffset(R.dimen.header_divider_height);
+        mHeaderHeight = context.getResources().getDimensionPixelOffset(R.dimen.header_height);
+        mTextSize = context.getResources().getDimensionPixelOffset(R.dimen.header_textsize);
+
+        mHeaderHeight = (int) Math.max(mHeaderHeight,mTextSize);
+
         mTextPaint = new TextPaint();
-        mTextPaint.setColor(Color.YELLOW);
+        mTextPaint.setColor(Color.BLACK);
+        mTextPaint.setTextSize(mTextSize);
+        mFontMetrics = mTextPaint.getFontMetrics();
 
-        mTextPaint.setTextSize(28);
-        mTextPaint.getFontMetrics(mFontMetric);
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.YELLOW);
 
-        mGap = 28;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        //super.getItemOffsets(outRect, view, parent, state);
-        int index = parent.getChildAdapterPosition(view);
+        super.getItemOffsets(outRect, view, parent, state);
 
-        if ( index % 5 == 0 ) {
-            outRect.top = mGap;
-        } else {
-            outRect.top = 0;
+        int position = parent.getChildAdapterPosition(view);
+
+        if ( mCallback != null ) {
+            GroupInfo groupInfo = mCallback.getGroupInfo(position);
+
+            //如果是组内的第一个则将间距撑开为一个Header的高度，或者就是普通的分割线高度
+            if ( groupInfo != null && groupInfo.isFirstViewInGroup() ) {
+                outRect.top = mHeaderHeight;
+            } else {
+                outRect.top = mDividerHeight;
+            }
         }
-
-       // if ( index == 0) outRect.top = 0;
     }
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);
-//        int childCount = parent.getChildCount();
-//
-//        for ( int i = 0; i < childCount; i++ ) {
-//            View view = parent.getChildAt(i);
-//            int top = view.getBottom();
-//            int bottom = top + 2;
-//            c.drawCircle(parent.getWidth() / 2 , top + ( bottom - top ) / 2,2,mPaint);
-//        }
-    }
-
-    @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        super.onDrawOver(c, parent, state);
-
 
         int childCount = parent.getChildCount();
 
@@ -74,49 +75,36 @@ public class SectionDecoration extends RecyclerView.ItemDecoration {
             View view = parent.getChildAt(i);
 
             int index = parent.getChildAdapterPosition(view);
-            Log.d("zml","index "+i);
 
-            if (!isFirstVisibleIndexInGroup(i,index)) {
-                continue;
-            }
+            if ( mCallback != null ) {
+                GroupInfo groupinfo = mCallback.getGroupInfo(index);
+                //只有组内的第一个ItemView之上才绘制
+                if ( groupinfo.isFirstViewInGroup() ) {
+                    int left = parent.getPaddingLeft();
+                    int top = view.getTop() - mHeaderHeight;
+                    int right = parent.getWidth() - parent.getPaddingRight();
+                    int bottom = view.getTop();
+                    //绘制Header
+                    c.drawRect(left,top,right,bottom,mPaint);
 
-//            if (i == 1 && getGroupId(index-1) != getGroupId(index)) {
-//                continue;
-//            }
-
-//            if ( index % 5 != 0 ) {
-//                continue;
-//            }
-            int top = view.getTop() - mGap;
-            if (i == 0 ) {
-                 //top = top < 0 ? 0 : top;
-                top = 0;
-
-                if (getGroupId(index + 1) != getGroupId(index)) {
-                    top = view.getBottom() - mGap;
-                    top = Math.min(top,0);
+                    float titleX =  left + mTextOffsetX;
+                    float titleY =  bottom - mFontMetrics.descent;
+                    //绘制Title
+                    c.drawText(groupinfo.getTitle(),titleX,titleY,mTextPaint);
                 }
             }
-
-            int bottom = top + mGap;
-            c.drawRect(0,top,parent.getWidth()-parent.getPaddingRight(),bottom,mPaint);
-            c.drawText(index/5+"",0,top+mGap,mTextPaint);
-
-//            c.drawLine(10,top,10,top + (bottom - top) / 2 - 4,mPaint);
-//            c.drawCircle(10,top + (bottom - top) / 2,3,mPaint);
-//            c.drawLine(10,top + (bottom - top) / 2 + 4,10,bottom+4,mPaint);
         }
     }
 
-    private boolean isFirstVisibleIndexInGroup(int i,int index) {
-        return i == 0 || index % 5 == 0;
+    public GroupInfoCallback getCallback() {
+        return mCallback;
     }
 
-    private int getGroupId(int index) {
-        return index / 5;
+    public void setCallback(GroupInfoCallback callback) {
+        this.mCallback = callback;
     }
 
-    public interface GroupIdCallback {
-        int getGroupId(int position);
+    public interface GroupInfoCallback {
+        GroupInfo getGroupInfo(int position);
     }
 }

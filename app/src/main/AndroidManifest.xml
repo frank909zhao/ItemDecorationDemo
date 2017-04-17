@@ -19,6 +19,8 @@
         <activity android:name=".ColorDividerActivity"></activity>
         <activity android:name=".TimelineActivity"></activity>
         <activity android:name=".BookRankActivity"></activity>
+        <activity android:name=".HeaderActivity"></activity>
+        <activity android:name=".StickyHeaderActivity"></activity>
     </application>
 
 </manifest>
